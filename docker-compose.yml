@@ -15,8 +15,8 @@ services:
     container_name: akiba-db
     restart: unless-stopped
     environment:
-      POSTGRES_USER: "almond"
-      POSTGRES_PASSWORD: "almond"
-      POSTGRES_DB: "almond"
+      POSTGRES_USER: "akiba"
+      POSTGRES_PASSWORD: "akiba"
+      POSTGRES_DB: "akiba"
     ports:
       - "5420:5432"
