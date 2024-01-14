@@ -6,7 +6,7 @@ import com.github.briannbig.akiba.entities.User;
 public class UserContext {
     private static final ThreadLocal<User> USER_THREAD_LOCAL = new ThreadLocal<>();
 
-    public static void setUserId(User user) {
+    public static void setUser(User user) {
         USER_THREAD_LOCAL.set(user);
     }
 

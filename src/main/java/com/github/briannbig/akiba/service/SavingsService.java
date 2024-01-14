@@ -1,5 +1,6 @@
 package com.github.briannbig.akiba.service;
 
+import com.github.briannbig.akiba.UserContext;
 import com.github.briannbig.akiba.api.request.SavingCreateRequest;
 import com.github.briannbig.akiba.api.request.SavingPlanCreateRequest;
 import com.github.briannbig.akiba.entities.Saving;
@@ -8,7 +9,6 @@ import com.github.briannbig.akiba.entities.enums.SavingCycle;
 import com.github.briannbig.akiba.entities.enums.SavingStrategy;
 import com.github.briannbig.akiba.repository.SavingPlanRepository;
 import com.github.briannbig.akiba.repository.SavingRepository;
-import com.github.briannbig.akiba.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,22 +19,14 @@ public class SavingsService {
 
     private final SavingPlanRepository savingPlanRepository;
     private final SavingRepository savingRepository;
-    private final UserRepository userRepository;
 
-    public SavingsService(SavingPlanRepository savingPlanRepository, SavingRepository savingRepository, UserRepository userRepository) {
+    public SavingsService(SavingPlanRepository savingPlanRepository, SavingRepository savingRepository) {
         this.savingPlanRepository = savingPlanRepository;
         this.savingRepository = savingRepository;
-        this.userRepository = userRepository;
     }
 
-    public Optional<SavingPlan> addSavingPlan(SavingPlanCreateRequest request) throws Exception {
-        var optionalUser = userRepository.findById(request.userId());
-
-        if (optionalUser.isEmpty()) {
-            throw new Exception("User with given id could not be found");
-        }
-
-        var savingPlan = new SavingPlan(optionalUser.get(), SavingCycle.from(request.savingCycle()), SavingStrategy.from(request.savingStrategy()),
+    public Optional<SavingPlan> addSavingPlan(SavingPlanCreateRequest request) {
+        var savingPlan = new SavingPlan(UserContext.getUser(), SavingCycle.from(request.savingCycle()), SavingStrategy.from(request.savingStrategy()),
                 request.amount(), request.target(), request.startDate(), request.reminderOn());
 
         savingPlan = savingPlanRepository.saveAndFlush(savingPlan);
@@ -43,7 +35,13 @@ public class SavingsService {
     }
 
     public List<SavingPlan> allSavingPlans() {
-        return savingPlanRepository.findAll();
+        List<String> roles = UserContext.getUser().getRoles().stream().map(r -> r.getRoleName().name()).toList();
+        if (roles.contains("ADMIN")) {
+            return savingPlanRepository.findAll();
+        } else {
+            return savingPlanRepository.findByUserId(UserContext.getUser().getId());
+        }
+
     }
 
     public Optional<Saving> addSaving(SavingCreateRequest request) throws Exception {

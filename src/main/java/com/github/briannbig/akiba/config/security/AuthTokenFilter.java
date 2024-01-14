@@ -1,6 +1,8 @@
 package com.github.briannbig.akiba.config.security;
 
 
+import com.github.briannbig.akiba.UserContext;
+import com.github.briannbig.akiba.entities.User;
 import com.github.briannbig.akiba.util.JWTUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -56,6 +58,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                UserContext.setUser((User) userDetails);
 
             }
         } catch (Exception e) {

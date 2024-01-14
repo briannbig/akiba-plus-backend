@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public record SavingPlanCreateRequest(
-        @NotBlank String userId,
         @NotBlank String savingCycle,
         @NotBlank String savingStrategy,
         @NotNull double amount,

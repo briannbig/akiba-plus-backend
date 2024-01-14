@@ -17,8 +17,8 @@ public class SwaggerConfig {
         return new OpenAPI()
                 .components(new Components())
                 .info(new Info()
-                        .title("Almond Point Of Sale")
-                        .description("Almond Point of Sale System REST API")
+                        .title("Akiba Savings")
+                        .description("Akiba Savings REST API")
                         .version("0.0.1")
                 );
     }
