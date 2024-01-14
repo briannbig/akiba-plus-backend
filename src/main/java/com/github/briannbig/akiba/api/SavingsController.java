@@ -34,13 +34,13 @@ public class SavingsController {
     }
 
 
-    @GetMapping("/")
+    @GetMapping("")
     public ResponseEntity<List<SavingPlanDto>> getAllSavings() {
         var savingPlans = savingsService.allSavingPlans().stream().map(SavingPlanDto::from).toList();
         return savingPlans.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(savingPlans);
     }
 
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<SavingPlanDto> addSavingPlan(@RequestBody SavingPlanCreateRequest request) {
         try {
             Optional<SavingPlanDto> savingPlanDtoOptional = savingsService.addSavingPlan(request).map(SavingPlanDto::from);
