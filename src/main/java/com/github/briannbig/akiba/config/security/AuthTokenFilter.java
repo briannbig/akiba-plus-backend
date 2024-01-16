@@ -68,7 +68,11 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
         }
 
-        filterChain.doFilter(request, response);
+        try {
+            filterChain.doFilter(request, response);
+        } finally {
+            UserContext.clear();
+        }
     }
 
     private String parseJwt(HttpServletRequest request) {
