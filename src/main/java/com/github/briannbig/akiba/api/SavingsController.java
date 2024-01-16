@@ -44,7 +44,7 @@ public class SavingsController {
     public ResponseEntity<SavingPlanDto> addSavingPlan(@RequestBody SavingPlanCreateRequest request) {
         try {
             Optional<SavingPlanDto> savingPlanDtoOptional = savingsService.addSavingPlan(request).map(SavingPlanDto::from);
-            return savingPlanDtoOptional.map(savingPlanDto -> ResponseEntity.status(HttpStatus.CREATED).body(savingPlanDto)).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_MODIFIED).build());
+            return savingPlanDtoOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_MODIFIED).build());
         } catch (Exception e) {
             return ResponseEntity.of(ProblemDetail.forStatusAndDetail(
                     HttpStatus.NOT_MODIFIED, e.getMessage()
@@ -58,8 +58,15 @@ public class SavingsController {
         return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<SavingDto> addSaving(@PathVariable String id, @RequestBody SavingCreateRequest request) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deletePlan(@PathVariable String id) {
+        return savingsService.deleteSavingPlan(id) == 0 ?
+                ResponseEntity.ok("plan deleted") : ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+    }
+
+
+    @PostMapping("/add-saving")
+    public ResponseEntity<SavingDto> addSaving(@RequestBody SavingCreateRequest request) {
         try {
             Optional<SavingDto> savingDtoOptional = savingsService.addSaving(request).map(SavingDto::from);
             return savingDtoOptional.map(dto -> ResponseEntity.status(HttpStatus.CREATED).body(dto)).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_MODIFIED).build());

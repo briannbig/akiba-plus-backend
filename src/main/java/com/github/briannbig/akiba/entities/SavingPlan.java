@@ -5,6 +5,7 @@ import com.github.briannbig.akiba.entities.enums.SavingStrategy;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity(name = "saving_plan")
 public class SavingPlan extends BaseEntity {
@@ -23,11 +24,17 @@ public class SavingPlan extends BaseEntity {
     boolean reminderOn;
     LocalDateTime startDate;
     LocalDateTime endDate;
+    @OneToMany(mappedBy = "savingPlan", fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    private List<Saving> savings;
+
 
     public SavingPlan() {
     }
 
-    public SavingPlan(String id, LocalDateTime createdAt, LocalDateTime updatedAt, User user, SavingCycle savingCycle, SavingStrategy savingStrategy, String goal, double amount, double target, boolean reminderOn, LocalDateTime startDate, LocalDateTime endDate) {
+    public SavingPlan(
+            String id, LocalDateTime createdAt, LocalDateTime updatedAt, User user, SavingCycle savingCycle,
+            SavingStrategy savingStrategy, String goal, double amount, double target,
+            boolean reminderOn, LocalDateTime startDate, LocalDateTime endDate, List<Saving> savings) {
         super(id, createdAt, updatedAt);
         this.user = user;
         this.savingCycle = savingCycle;
@@ -38,14 +45,16 @@ public class SavingPlan extends BaseEntity {
         this.startDate = startDate;
         this.endDate = endDate;
         this.reminderOn = reminderOn;
+        this.savings = savings;
+
     }
 
     public SavingPlan(User user, SavingCycle savingCycle, SavingStrategy savingStrategy, String goal, double amount, double target, boolean reminderOn, LocalDateTime startDate, LocalDateTime endDate) {
-        this(null, null, null, user, savingCycle, savingStrategy, goal, amount, target, reminderOn, startDate, endDate);
+        this(null, null, null, user, savingCycle, savingStrategy, goal, amount, target, reminderOn, startDate, endDate, null);
     }
 
     public SavingPlan(User user, SavingCycle savingCycle, SavingStrategy savingStrategy, String goal, double amount, double target, LocalDateTime startDate, boolean reminderOn) {
-        this(null, null, null, user, savingCycle, savingStrategy, goal, amount, target, reminderOn, startDate, null);
+        this(user, savingCycle, savingStrategy, goal, amount, target, reminderOn, startDate, null);
     }
 
     public User getUser() {
@@ -118,6 +127,18 @@ public class SavingPlan extends BaseEntity {
 
     public void setEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
+    }
+
+    public List<Saving> getSavings() {
+        return savings;
+    }
+
+    public void setSavings(List<Saving> savings) {
+        this.savings = savings;
+    }
+
+    public double getCurrentBalance() {
+        return savings.stream().mapToDouble(Saving::getAmount).sum();
     }
 
     @Override

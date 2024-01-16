@@ -41,6 +41,14 @@ public class SavingsService {
         return Optional.of(savingPlan);
     }
 
+    public int deleteSavingPlan(String id) {
+        var optionalSavingPlan = savingPlanRepository.findById(id);
+        if (optionalSavingPlan.isPresent()) {
+            savingPlanRepository.delete(optionalSavingPlan.get());
+            return 0;
+        } else return 1;
+    }
+
     public List<SavingPlan> allSavingPlans() {
         List<String> roles = UserContext.getUser().getRoles().stream().map(r -> r.getRoleName().name()).toList();
         if (roles.contains("ADMIN")) {
