@@ -25,9 +25,16 @@ public class SavingsService {
         this.savingRepository = savingRepository;
     }
 
-    public Optional<SavingPlan> addSavingPlan(SavingPlanCreateRequest request) {
+    public Optional<SavingPlan> addSavingPlan(SavingPlanCreateRequest request) throws Exception {
+
+        var existingPlansCount = savingPlanRepository.findByUserId(UserContext.getUserId()).size();
+
+        if (existingPlansCount >= 3) {
+            throw new Exception("User already reached max allowed saving plans");
+        }
+
         var savingPlan = new SavingPlan(UserContext.getUser(), SavingCycle.from(request.savingCycle()), SavingStrategy.from(request.savingStrategy()),
-                request.amount(), request.target(), request.startDate(), request.reminderOn());
+                request.goal(), request.amount(), request.target(), request.startDate(), request.reminderOn());
 
         savingPlan = savingPlanRepository.saveAndFlush(savingPlan);
 
@@ -42,6 +49,10 @@ public class SavingsService {
             return savingPlanRepository.findByUserId(UserContext.getUser().getId());
         }
 
+    }
+
+    public Optional<SavingPlan> getPlanById(String id) {
+        return savingPlanRepository.findById(id);
     }
 
     public Optional<Saving> addSaving(SavingCreateRequest request) throws Exception {

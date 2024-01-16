@@ -16,6 +16,8 @@ public class SavingPlan extends BaseEntity {
     private SavingCycle savingCycle;
     @Enumerated(EnumType.STRING)
     SavingStrategy savingStrategy;
+    String goal;
+
     double amount;
     double target;
     boolean reminderOn;
@@ -25,11 +27,12 @@ public class SavingPlan extends BaseEntity {
     public SavingPlan() {
     }
 
-    public SavingPlan(String id, LocalDateTime createdAt, LocalDateTime updatedAt, User user, SavingCycle savingCycle, SavingStrategy savingStrategy, double amount, double target, boolean reminderOn, LocalDateTime startDate, LocalDateTime endDate) {
+    public SavingPlan(String id, LocalDateTime createdAt, LocalDateTime updatedAt, User user, SavingCycle savingCycle, SavingStrategy savingStrategy, String goal, double amount, double target, boolean reminderOn, LocalDateTime startDate, LocalDateTime endDate) {
         super(id, createdAt, updatedAt);
         this.user = user;
         this.savingCycle = savingCycle;
         this.savingStrategy = savingStrategy;
+        this.goal = goal;
         this.amount = amount;
         this.target = target;
         this.startDate = startDate;
@@ -37,12 +40,12 @@ public class SavingPlan extends BaseEntity {
         this.reminderOn = reminderOn;
     }
 
-    public SavingPlan(User user, SavingCycle savingCycle, SavingStrategy savingStrategy, double amount, double target, boolean reminderOn, LocalDateTime startDate, LocalDateTime endDate) {
-        this(null, null, null, user, savingCycle, savingStrategy, amount, target, reminderOn, startDate, endDate);
+    public SavingPlan(User user, SavingCycle savingCycle, SavingStrategy savingStrategy, String goal, double amount, double target, boolean reminderOn, LocalDateTime startDate, LocalDateTime endDate) {
+        this(null, null, null, user, savingCycle, savingStrategy, goal, amount, target, reminderOn, startDate, endDate);
     }
 
-    public SavingPlan(User user, SavingCycle savingCycle, SavingStrategy savingStrategy, double amount, double target, LocalDateTime startDate, boolean reminderOn) {
-        this(null, null, null, user, savingCycle, savingStrategy, amount, target, reminderOn, startDate, null);
+    public SavingPlan(User user, SavingCycle savingCycle, SavingStrategy savingStrategy, String goal, double amount, double target, LocalDateTime startDate, boolean reminderOn) {
+        this(null, null, null, user, savingCycle, savingStrategy, goal, amount, target, reminderOn, startDate, null);
     }
 
     public User getUser() {
@@ -67,6 +70,14 @@ public class SavingPlan extends BaseEntity {
 
     public void setSavingStrategy(SavingStrategy savingStrategy) {
         this.savingStrategy = savingStrategy;
+    }
+
+    public void setGoal(String goal) {
+        this.goal = goal;
+    }
+
+    public String getGoal() {
+        return goal;
     }
 
     public double getAmount() {

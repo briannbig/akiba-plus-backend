@@ -52,6 +52,12 @@ public class SavingsController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<SavingPlanDto> getPlanById(@PathVariable String id) {
+        Optional<SavingPlanDto> dto = savingsService.getPlanById(id).map(SavingPlanDto::from);
+        return dto.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
     @PostMapping("/{id}")
     public ResponseEntity<SavingDto> addSaving(@PathVariable String id, @RequestBody SavingCreateRequest request) {
         try {

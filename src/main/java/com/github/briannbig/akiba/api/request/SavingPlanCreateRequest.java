@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 public record SavingPlanCreateRequest(
         @NotBlank String savingCycle,
         @NotBlank String savingStrategy,
+        @NotBlank String goal,
         @NotNull double amount,
         @NotNull double target,
         @NotNull boolean reminderOn,
