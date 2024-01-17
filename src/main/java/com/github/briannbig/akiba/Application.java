@@ -45,16 +45,10 @@ public class Application {
                 userService.saveRole(new Role(RoleName.ADMIN));
             }
 
-            var optionalCashierRole = roleRepository.findByRoleName(RoleName.CASHIER);
+            var optionalCashierRole = roleRepository.findByRoleName(RoleName.CUSTOMER);
             if (optionalCashierRole.isEmpty()) {
-                log.info("Creating Cashier role...");
-                userService.saveRole(new Role(RoleName.CASHIER));
-            }
-
-            var optionalRegularRole = roleRepository.findByRoleName(RoleName.REGULAR);
-            if (optionalRegularRole.isEmpty()) {
-                log.info("Creating Regular role...");
-                userService.saveRole(new Role(RoleName.REGULAR));
+                log.info("Creating Customer role...");
+                userService.saveRole(new Role(RoleName.CUSTOMER));
             }
 
             var optionalDevRole = roleRepository.findByRoleName(RoleName.DEVELOPER);
@@ -75,13 +69,12 @@ public class Application {
                 if (optionalRole.isPresent()) {
                     log.info("creating admin role...");
                     var role = optionalRole.get();
-                    List<RoleDTO> roleDTOS = List.of(RoleDTO.from(role));
-                    var request = new UserCreateRequest(props.defaultAdminUsername(), props.defaultAdminEmail(), "Akiba", "Admin",
-                            "Unique#", props.defaultAdminTelephone(), props.defaultAdminPassword(), props.defaultAdminPassword(), roleDTOS);
+                    List<String> roles = List.of(role.getRoleName().name());
+                    var request = new UserCreateRequest(props.defaultAdminUsername(), props.defaultAdminEmail(), "Akiba admin", props.defaultAdminPassword(), props.defaultAdminPassword(), roles);
                     userService.registerUser(request);
 
                 }
-                log.error("Could not find dev role");
+                log.error("Could not find admin role");
 
             }
 

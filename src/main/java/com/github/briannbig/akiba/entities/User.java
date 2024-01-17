@@ -18,13 +18,7 @@ public class User extends BaseEntity implements UserDetails {
     @Column(unique = true)
     private String email;
     @Column(nullable = false)
-    private String firstName;
-    @Column(nullable = false)
-    private String lastName;
-    @Column(nullable = false, unique = true)
-    private String nationalID;
-    @Column(unique = true, nullable = false)
-    private String telephone;
+    private String fullName;
     @JsonIgnore
     private String password;
     @ManyToMany(fetch = FetchType.EAGER,
@@ -40,24 +34,21 @@ public class User extends BaseEntity implements UserDetails {
     public User() {
     }
 
-    public User(String id, LocalDateTime createdAt, LocalDateTime updatedAt, String username, String email, String firstName, String lastName, String nationalID, String telephone, String password, Set<Role> roles) {
+    public User(String id, LocalDateTime createdAt, LocalDateTime updatedAt, String username, String email, String fullName, String password, Set<Role> roles) {
         super(id, createdAt, updatedAt);
         this.username = username;
         this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.nationalID = nationalID;
-        this.telephone = telephone;
+        this.fullName = fullName;
         this.password = password;
         this.roles = roles;
     }
 
-    public User(String username, String email, String firstName, String lastName, String nationalID, String telephone, String password, Set<Role> roles) {
-        this(null, null, null, username, email, firstName, lastName, nationalID, telephone, password, roles);
+    public User(String username, String email, String fullName, String password, Set<Role> roles) {
+        this(null, null, null, username, email, fullName, password, roles);
     }
 
-    public User(String username, String email, String firstName, String lastName, String nationalID, String telephone, String password) {
-        this(username, email, firstName, lastName, nationalID, telephone, password, null);
+    public User(String username, String email, String fullName, String password) {
+        this(username, email, fullName, password, null);
     }
 
 
@@ -98,36 +89,13 @@ public class User extends BaseEntity implements UserDetails {
         this.email = email;
     }
 
-    public String getFirstName() {
-        return firstName;
+
+    public String getFullName() {
+        return fullName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+    public void setFullName(String fullName) {
 
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getNationalID() {
-        return nationalID;
-    }
-
-    public void setNationalID(String nationalID) {
-        this.nationalID = nationalID;
-    }
-
-    public String getTelephone() {
-        return telephone;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
     }
 
     @Override
@@ -161,10 +129,7 @@ public class User extends BaseEntity implements UserDetails {
                 "Id='" + getId() + '\'' +
                 ", username='" + username + '\'' +
                 ", email='" + email + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", nationalID='" + nationalID + '\'' +
-                ", telephone='" + telephone + '\'' +
+                ", fullName='" + fullName + '\'' +
                 '}';
     }
 }

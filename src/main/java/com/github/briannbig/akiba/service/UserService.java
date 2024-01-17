@@ -67,29 +67,18 @@ public class UserService {
             throw new Exception("Email cannot be used");
         }
 
-        optionalUser = userRepository.findByNationalID(request.nationalID());
-        if (optionalUser.isPresent()) {
-            log.error("National Id {} already taken", request.nationalID());
-            throw new Exception("National ID number cannot be used");
-        }
-        optionalUser = userRepository.findByTelephone(request.telephone());
-        if (optionalUser.isPresent()) {
-            log.error("Telephone {} already taken", request.telephone());
-            throw new Exception("Telephone cannot be used");
-        }
-
-        var roleDTOS = request.roles();
+        var rolesList = request.roles();
 
         if (request.roles().isEmpty()) {
-            roleDTOS = new ArrayList<>();
-            roleDTOS.add(new RoleDTO(null, RoleName.CASHIER.name()));
+            rolesList = new ArrayList<>();
+            rolesList.add(RoleName.CUSTOMER.name());
         }
 
-        var roles = roleDTOS.stream().map(roleDTO -> roleRepository.findByRoleName(RoleName.valueOf(roleDTO.name())).orElseThrow()).collect(Collectors.toSet());
+        var roles = rolesList.stream().map(r -> roleRepository.findByRoleName(RoleName.valueOf(r)).orElseThrow()).collect(Collectors.toSet());
 
         var encodedPassword = passwordEncoder.encode(request.password());
 
-        var user = new User(request.username(), request.email(), request.firstName(), request.lastName(), request.nationalID(), request.telephone(), encodedPassword, roles);
+        var user = new User(request.username(), request.email(), request.fullName(), encodedPassword, roles);
         user = userRepository.saveAndFlush(user);
 
         return Optional.of(user);
@@ -192,17 +181,14 @@ public class UserService {
 
         var optionalSuperAdminRole = roleRepository.findByRoleName(RoleName.SUPER_ADMIN);
         var optionalAdminRole = roleRepository.findByRoleName(RoleName.ADMIN);
-        var optionalCashierRole = roleRepository.findByRoleName(RoleName.CASHIER);
-        var optionalRegularRole = roleRepository.findByRoleName(RoleName.REGULAR);
+        var optionalCashierRole = roleRepository.findByRoleName(RoleName.CUSTOMER);
         var optionalDeveloperRole = roleRepository.findByRoleName(RoleName.DEVELOPER);
 
         if (optionalSuperAdminRole.isPresent() && role.getRoleName() == RoleName.SUPER_ADMIN) {
             log.error("Role: {} already present", role.getRoleName());
         } else if (optionalAdminRole.isPresent() && Objects.equals(role.getRoleName(), RoleName.ADMIN)) {
             log.error("Role: {} already present", role.getRoleName());
-        } else if (optionalCashierRole.isPresent() && Objects.equals(role.getRoleName(), RoleName.CASHIER)) {
-            log.error("Role: {} already present", role.getRoleName());
-        } else if (optionalRegularRole.isPresent() && Objects.equals(role.getRoleName(), RoleName.REGULAR)) {
+        } else if (optionalCashierRole.isPresent() && Objects.equals(role.getRoleName(), RoleName.CUSTOMER)) {
             log.error("Role: {} already present", role.getRoleName());
         } else if (optionalDeveloperRole.isPresent() && role.getRoleName() == RoleName.DEVELOPER) {
             log.error("Role: {} already present", role.getRoleName());

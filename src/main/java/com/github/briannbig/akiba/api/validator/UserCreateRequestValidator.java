@@ -12,17 +12,8 @@ public class UserCreateRequestValidator implements RequestValidator<UserCreateRe
         if (isEmptyString(request.email())) {
             throw new RequestValidationException("Email cannot be empty");
         }
-        if (isEmptyString(request.firstName())) {
-            throw new RequestValidationException("First name cannot be empty");
-        }
-        if (isEmptyString(request.lastName())) {
-            throw new RequestValidationException("Last name cannot be empty");
-        }
-        if (isEmptyString(request.nationalID())) {
-            throw new RequestValidationException("National ID Cannot be empty");
-        }
-        if (isEmptyString(request.telephone())) {
-            throw new RequestValidationException("Telephone number cannot be used");
+        if (isEmptyString(request.fullName())) {
+            throw new RequestValidationException("Name cannot be empty");
         }
         if (isEmptyString(request.password())) {
             throw new RequestValidationException("Password cannot be empty");
